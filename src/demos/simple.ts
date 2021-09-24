@@ -4,7 +4,7 @@ export default {
   // jsonSchema
   schema: {
     description: 'A simple form example.',
-    type: 'object',
+    type: 'string',
     required: ['firstName', 'lastName'],
     properties: {
       firstName: {

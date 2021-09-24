@@ -190,9 +190,11 @@ export default defineComponent({
 
             <div class={classes.form}>
               {/* 右边是我们的 schema 区域 */}
-              {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore */}
-              <SchemaForm />
+              <SchemaForm
+                schema={demo.schema}
+                onChange={handleChange}
+                value={demo.data}
+              />
               {/* <SchemaForm
                 schema={demo.schema}
                 uiSchema={demo.uiSchema || {}}
