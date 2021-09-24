@@ -1,55 +1,212 @@
-import { defineComponent, ref, Ref } from 'vue'
-
-import MonacoEditor from './components/MonacoEditor'
-
+import { defineComponent, ref, Ref, reactive, watchEffect } from 'vue'
 import { createUseStyles } from 'vue-jss'
 
-// 把 schema 这个对象转化成 string
+import MonacoEditor from './components/MonacoEditor'
+// 这些是 json.schema 的例子（其中的结构也是有固定的结构的）
+import demos from './demos'
+import SchemaForm from '../lib'
+
+// TODO: 在lib中export
+type Schema = any
+type UISchema = any
+
 function toJson(data: any) {
-  // 需要传后续的两个参数
   return JSON.stringify(data, null, 2)
 }
 
-const schema = {
-  type: 'string',
-}
-
 const useStyles = createUseStyles({
-  editor: {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '1200px',
+    margin: '0 auto',
+  },
+  menu: {
+    marginBottom: 20,
+  },
+  code: {
+    width: 700,
+    flexShrink: 0,
+  },
+  codePanel: {
     minHeight: 400,
+    marginBottom: 20,
+  },
+  uiAndValue: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    // uiAndValue 内部所有的样式都是一样
+    '& > *': {
+      width: '46%',
+    },
+  },
+  content: {
+    display: 'flex',
+  },
+  form: {
+    padding: '0 20px',
+    flexGrow: 1,
+  },
+  menuButton: {
+    appearance: 'none',
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    cursor: 'pointer',
+    display: 'inline-block',
+    padding: 15,
+    borderRadius: 5,
+    // .menuButton:hover
+    '&:hover': {
+      background: '#efefef',
+    },
+  },
+  menuSelected: {
+    background: '#337ab7',
+    color: '#fff',
+    '&:hover': {
+      background: '#337ab7',
+    },
   },
 })
 
 export default defineComponent({
-  // 主张通过 setup 返回一个函数，因为 setup 声明的 ref reactive computed ... 都是可以在 return 的组件函数里面去使用的
   setup() {
-    const schemaRef: Ref<any> = ref(schema)
+    const selectedRef: Ref<number> = ref(0)
 
-    const handleCodeChange = (code: string) => {
-      let schema: any
+    const demo: {
+      // schema data uiSchema 对应了三个编辑器（对象）
+      // schemaCode dataCode uiSchemaCode 对应的编辑器的内容 JSON 化之后的数据（字符串）
+      schema: Schema | null
+      data: any
+      uiSchema: UISchema | null
+      schemaCode: string
+      dataCode: string
+      uiSchemaCode: string
+      customValidate: ((d: any, e: any) => void) | undefined
+    } = reactive({
+      schema: null,
+      data: {},
+      uiSchema: {},
+      schemaCode: '',
+      dataCode: '',
+      uiSchemaCode: '',
+      customValidate: undefined,
+    })
 
-      try {
-        schema = JSON.parse(code)
-      } catch (error) {
-        console.log(error)
-      }
-      schemaRef.value = schema
-    }
+    watchEffect(() => {
+      const index = selectedRef.value
+      const d: any = demos[index]
+      demo.schema = d.schema
+      demo.data = d.default
+      demo.uiSchema = d.uiSchema
+      demo.schemaCode = toJson(d.schema)
+      demo.dataCode = toJson(d.default)
+      demo.uiSchemaCode = toJson(d.uiSchema)
+      demo.customValidate = d.customValidate
+    })
+
+    const methodRef: Ref<any> = ref()
+    const contextRef = ref()
     const classesRef = useStyles()
 
+    const validateForm = () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      contextRef.value.doValidate().then((result) => {
+        console.log('result', result)
+      })
+    }
+    const handleChange = (v: any) => {
+      demo.data = v
+      demo.dataCode = toJson(v)
+    }
+
+    // 代码编辑器一旦被触发，同是如果数据发生了变化
+    function handleCodeChange(
+      filed: 'schema' | 'data' | 'uiSchema',
+      value: string,
+    ) {
+      try {
+        const json = JSON.parse(value)
+        demo[filed] = json
+        ;(demo as any)[`${filed}Code`] = value
+      } catch (err) {
+        // some thing
+      }
+    }
+
+    const handleSchemaChange = (v: string) => handleCodeChange('schema', v)
+    const handleDataChange = (v: string) => handleCodeChange('data', v)
+    const handleUISchemaChange = (v: string) => handleCodeChange('uiSchema', v)
     return () => {
       const classes = classesRef.value
-      const code = toJson(schemaRef.value)
+      const selected = selectedRef.value
 
       return (
-        <div>
-          <MonacoEditor
-            code={code}
-            onChange={handleCodeChange}
-            title="Schema"
-            class={classes.editor}
-          />
+        // <StyleThemeProvider>
+        // <VJSFThemeProvider theme={theme as any}>
+        <div class={classes.container}>
+          <div class={classes.menu}>
+            <h1>Vue3 JsonSchema Form</h1>
+            <div>
+              {demos.map((demo, index) => (
+                <button
+                  class={{
+                    [classes.menuButton]: true,
+                    [classes.menuSelected]: index === selected,
+                  }}
+                  onClick={() => (selectedRef.value = index)}
+                >
+                  {demo.name}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div class={classes.content}>
+            {/* 左边的 code 区域 */}
+            <div class={classes.code}>
+              <MonacoEditor
+                code={demo.schemaCode}
+                class={classes.codePanel}
+                onChange={handleSchemaChange}
+                title="Schema"
+              />
+              <div class={classes.uiAndValue}>
+                <MonacoEditor
+                  code={demo.uiSchemaCode}
+                  class={classes.codePanel}
+                  onChange={handleUISchemaChange}
+                  title="UISchema"
+                />
+                <MonacoEditor
+                  code={demo.dataCode}
+                  class={classes.codePanel}
+                  onChange={handleDataChange}
+                  title="Value"
+                />
+              </div>
+            </div>
+
+            <div class={classes.form}>
+              {/* 右边是我们的 schema 区域 */}
+              {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore */}
+              <SchemaForm />
+              {/* <SchemaForm
+                schema={demo.schema}
+                uiSchema={demo.uiSchema || {}}
+                onChange={handleChange}
+                value={demo.data}
+                contextRef={contextRef}
+                customValidate={demo.customValidate}
+              />
+              <button onClick={validateForm}>校验</button> */}
+            </div>
+          </div>
         </div>
+        // </VJSFThemeProvider>
+        // </StyleThemeProvider>
       )
     }
   },
