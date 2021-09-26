@@ -1,3 +1,5 @@
+import type { PropType } from 'vue'
+
 // 会把一些通用的类型统一放在这个 ts 文件里面
 export enum SchemaTypes {
   'NUMBER' = 'number',
@@ -48,3 +50,17 @@ export interface Schema {
   exclusiveMaximum?: number
   exclusiveMinimum?: number
 }
+
+export const FiledPropsDefine = {
+  schema: {
+    type: Object as PropType<Schema>,
+    required: true,
+  },
+  value: {
+    required: true,
+  },
+  onChange: {
+    type: Function as PropType<(v: any) => void>,
+    required: true,
+  },
+} as const
