@@ -1,24 +1,13 @@
 // 根据不同的类型来把对应渲染这个 schema 的工作交给对应的那个组件来做
-import { defineComponent, h, PropType } from 'vue'
+import { defineComponent } from 'vue'
 import NumberField from './fields/NumberField'
-import StringField from './fields/StringField'
-import { Schema, SchemaTypes } from './types'
+// import StringField from './fields/StringField'
+import { SchemaTypes, FiledPropsDefine } from './types'
+import StringField from './fields/StringField.vue'
 
 export default defineComponent({
   name: 'SchemaItems',
-  props: {
-    schema: {
-      type: Object as PropType<Schema>,
-      required: true,
-    },
-    value: {
-      required: true,
-    },
-    onChange: {
-      type: Function as PropType<(v: any) => void>,
-      required: true,
-    },
-  },
+  props: FiledPropsDefine,
   setup(props, { slots, emit, attrs }) {
     return () => {
       const { schema } = props
