@@ -1,6 +1,6 @@
 // 根据不同的类型来把对应渲染这个 schema 的工作交给对应的那个组件来做
 import { defineComponent } from 'vue'
-import NumberField from './fields/NumberField'
+import NumberField from './fields/NumberField.vue'
 // import StringField from './fields/StringField'
 import { SchemaTypes, FiledPropsDefine } from './types'
 import StringField from './fields/StringField.vue'
@@ -28,6 +28,8 @@ export default defineComponent({
 
           break
       }
+      // 注意由于 StringField 是 .vue 的文件，该文件并不是 ts 所能解析的类型
+      // <StringField />
       return <Component {...props} />
     }
   },
