@@ -1,7 +1,8 @@
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, inject } from 'vue'
 
 import { FiledPropsDefine } from '../types'
-import SchemaItems from 'lib/SchemaItems'
+// import SchemaItems from 'lib/SchemaItems'
+import { SchemaFormContextKey } from '../context'
 
 const schema = {
   type: 'object',
@@ -19,6 +20,12 @@ export default defineComponent({
   name: 'ObjectField',
   props: FiledPropsDefine,
   setup(props, { slots, emit, attrs }) {
-    return () => h('div', 'this is ObjectField')
+    const context: any = inject(SchemaFormContextKey)
+
+    console.log(context)
+
+    return () => {
+      const { SchemaItem } = context
+    }
   },
 })
