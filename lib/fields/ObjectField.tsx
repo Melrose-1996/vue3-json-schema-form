@@ -1,8 +1,8 @@
-import { defineComponent, h, inject, DefineComponent } from 'vue'
+import { defineComponent } from 'vue'
 
 import { FiledPropsDefine } from '../types'
+import { useVJSFContext } from '../context'
 // import SchemaItems from 'lib/SchemaItems'
-import { SchemaFormContextKey } from '../context'
 import { isObject } from '../utils'
 
 const schema = {
@@ -21,19 +21,13 @@ const schema = {
 //   DefineComponent<typeof FiledPropsDefine>
 // }
 //
-type SchemaItemDefine = DefineComponent<typeof FiledPropsDefine>
 
 export default defineComponent({
   name: 'ObjectField',
   props: FiledPropsDefine,
   setup(props: any, { slots, emit, attrs }) {
     // 有可能出现直接使用 ObjectField 而不去使用 SchemaForm，就有可能存在 undefined 的情况
-    const context: { SchemaItem: SchemaItemDefine } | undefined =
-      inject(SchemaFormContextKey)
-
-    if (!context) {
-      throw new Error('SchemaForm should be used')
-    }
+    const context = useVJSFContext()
 
     const handleObjectFieldChange = (key: string, v: any) => {
       const value: any = isObject(props.value) ? props.value : {}
