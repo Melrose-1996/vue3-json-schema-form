@@ -70,3 +70,7 @@ export const FiledPropsDefine = {
 } as const
 
 export type CommonFieldType = DefineComponent<typeof FiledPropsDefine>
+
+export enum SelectionWidgetNames {
+  SelectionWidget = 'SelectionWidget',
+}

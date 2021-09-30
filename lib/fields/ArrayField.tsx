@@ -1,7 +1,8 @@
 import { defineComponent, PropType } from 'vue'
-import { FiledPropsDefine, Schema } from '../types'
+import { FiledPropsDefine, Schema, SelectionWidgetNames } from '../types'
 import { useVJSFContext } from '../context'
 import { createUseStyles } from 'vue-jss'
+import SelectionWidget from '../widgets/Selection'
 /**
  * {
  *  items: { type: string},
@@ -119,6 +120,8 @@ export default defineComponent({
       props.onChange(arr)
     }
 
+    // const SelectionWidgetRef: any = SelectionWidgetNames.SelectionWidget
+
     const handleAdd = (index: number) => {
       const { value } = props
       const arr = Array.isArray(value) ? value : []
@@ -157,6 +160,8 @@ export default defineComponent({
       const isMultiType = Array.isArray(schema.items)
       const isSelect = schema.items && schema.items.enum
 
+      // const SelectionWidget = SelectionWidgetRef.value
+
       if (isMultiType) {
         const arr = Array.isArray(value) ? value : []
         return schema.items!.map((s: Schema, index: number) => (
@@ -190,6 +195,19 @@ export default defineComponent({
             </ArrayItemWrapper>
           )
         })
+      } else {
+        const enumOptions = (schema.items as Schema).enum
+        const options = enumOptions?.map((e) => ({
+          key: e,
+          value: e,
+        }))
+        return (
+          <SelectionWidget
+            options={options || []}
+            value={props.value}
+            onChange={props.onChange}
+          />
+        )
       }
 
       return <div></div>
