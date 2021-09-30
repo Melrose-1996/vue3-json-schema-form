@@ -1,7 +1,7 @@
-import { defineComponent, h } from 'vue'
-import { FiledPropsDefine } from '../types'
+import { defineComponent, PropType } from 'vue'
+import { FiledPropsDefine, Schema } from '../types'
 import { useVJSFContext } from '../context'
-
+import { createUseStyles } from 'vue-jss'
 /**
  * {
  *  items: { type: string},
@@ -21,13 +21,178 @@ import { useVJSFContext } from '../context'
  * }
  */
 
+// 用 jss 调写样式
+const useStyles = createUseStyles({
+  container: {
+    border: '1px soild #eee',
+  },
+  actions: {
+    background: '#eee',
+    padding: 10,
+    textAlign: 'right',
+  },
+  action: {
+    '& + &': {
+      marginLeft: 10,
+    },
+  },
+  content: {
+    padding: 10,
+  },
+})
+
+// 用于排序的按钮操作
+const ArrayItemWrapper = defineComponent({
+  name: 'ArrayItemWrapper',
+  props: {
+    onAdd: {
+      type: Function as PropType<(index: number) => void>,
+      required: true,
+    },
+    onDelete: {
+      type: Function as PropType<(index: number) => void>,
+      required: true,
+    },
+    onUp: {
+      type: Function as PropType<(index: number) => void>,
+      required: true,
+    },
+    onDown: {
+      type: Function as PropType<(index: number) => void>,
+      required: true,
+    },
+    index: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup(props: any, { slots }) {
+    const classesRef = useStyles()
+    return () => {
+      const classes = classesRef.value
+      return (
+        <div class={classes.container}>
+          <div class={classes.actions}>
+            <button
+              class={classes.action}
+              onClick={() => props.onAdd(props.index)}
+            >
+              新增
+            </button>
+            <button
+              class={classes.action}
+              onClick={() => props.onDelete(props.index)}
+            >
+              删除
+            </button>
+            <button
+              class={classes.action}
+              onClick={() => props.onUp(props.index)}
+            >
+              上移
+            </button>
+            <button
+              class={classes.action}
+              onClick={() => props.onDown(props.index)}
+            >
+              下移
+            </button>
+          </div>
+          {/* slots.default 是一个函数 */}
+          <div class={classes.content}>{slots.default && slots.default()}</div>
+        </div>
+      )
+    }
+  },
+})
+
 export default defineComponent({
   name: 'ArrayField',
   props: FiledPropsDefine,
-  setup(props, { slots, emit, attrs }) {
+  setup(props: any, { slots, emit, attrs }) {
     const context = useVJSFContext()
+    // 针对于 multiType 函数的 handle 函数
+    const handleArrayItemChange = (v: any, index: number) => {
+      const { value } = props
+      const arr = Array.isArray(value) ? value : []
+      arr[index] = v
+      props.onChange(arr)
+    }
+
+    const handleAdd = (index: number) => {
+      const { value } = props
+      const arr = Array.isArray(value) ? value : []
+      arr.splice(index + 1, 0, undefined)
+      props.onChange(arr)
+    }
+    const handleDelete = (index: number) => {
+      const { value } = props
+      const arr = Array.isArray(value) ? value : []
+      arr.splice(index, 1)
+      props.onChange(arr)
+    }
+    const handleUp = (index: number) => {
+      if (index === 0) return
+
+      const { value } = props
+      const arr = Array.isArray(value) ? value : []
+
+      const item = arr.splice(index, 1)
+      arr.splice(index - 1, 0, item[0])
+      props.onChange(arr)
+    }
+    const handleDown = (index: number) => {
+      const { value } = props
+      const arr = Array.isArray(value) ? value : []
+
+      if (index === arr.length - 1) return
+      const item = arr.splice(index, 1)
+      arr.splice(index + 1, 0, item[0])
+      props.onChange(arr)
+    }
+
     return () => {
       const { SchemaItem } = context
+      const { schema, rootSchema, value } = props
+      const isMultiType = Array.isArray(schema.items)
+      const isSelect = schema.items && schema.items.enum
+
+      if (isMultiType) {
+        const arr = Array.isArray(value) ? value : []
+        return schema.items!.map((s: Schema, index: number) => (
+          <SchemaItem
+            schema={s}
+            key={index}
+            rootSchema={rootSchema}
+            onChange={(v: any) => handleArrayItemChange(v, index)}
+            value={arr[index]}
+          />
+        ))
+      } else if (!isSelect) {
+        // 不是单类型的渲染
+        const arr = Array.isArray(value) ? value : []
+        return arr.map((v: any, index: number) => {
+          return (
+            <ArrayItemWrapper
+              index={index}
+              onAdd={handleAdd}
+              onDelete={handleDelete}
+              onUp={handleUp}
+              onDown={handleDown}
+            >
+              <SchemaItem
+                schema={schema.items as Schema}
+                key={index}
+                rootSchema={rootSchema}
+                onChange={(v: any) => handleArrayItemChange(v, index)}
+                value={v}
+              />
+            </ArrayItemWrapper>
+          )
+        })
+      }
+
+      return <div></div>
     }
   },
 })
