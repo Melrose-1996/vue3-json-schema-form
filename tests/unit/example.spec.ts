@@ -1,12 +1,32 @@
 import { shallowMount } from '@vue/test-utils'
-import HelloWorld from '@/components/HelloWorld.vue'
+// import HelloWorld from '@/components/HelloWorld.vue'
 
-describe('HelloWorld.vue', () => {
-  it('renders props.msg when passed', () => {
-    const msg = 'new message'
-    const wrapper = shallowMount(HelloWorld, {
-      props: { msg },
+import JsonSchemaForm, { NumberField } from '../../lib'
+
+describe('JsonSchemaForm', () => {
+  it('should render correct number field', async () => {
+    let msg = ''
+    // 这里我们去渲染这个组件 wrapper ,我们是可以去找到一个 schemaItem 节点和 numberField 节点
+    const wrapper = shallowMount(JsonSchemaForm, {
+      props: {
+        schema: {
+          type: 'number',
+        },
+        value: msg,
+        onChange: (v: any) => {
+          msg = v
+        },
+      },
     })
-    expect(wrapper.text()).toMatch(msg)
+    const numberField = wrapper.findComponent(NumberField)
+    // 该组件是确认渲染的
+    expect(numberField.exists()).toBeTruthy()
+    const input = numberField.find('input')
+    input.element.value = '123'
+    input.trigger('input')
+    // 当 onChange 事件触发了，value 是需要发生变化的
+    // await numberField.props('onChange')('123')
+    expect(msg).toBe(123)
+    // expect(wrapper.text()).toMatch(msg)
   })
 })
