@@ -5,16 +5,16 @@ import JsonSchemaForm, { NumberField } from '../../lib'
 
 describe('JsonSchemaForm', () => {
   it('should render correct number field', async () => {
-    let msg = ''
+    let value = ''
     // 这里我们去渲染这个组件 wrapper ,我们是可以去找到一个 schemaItem 节点和 numberField 节点
     const wrapper = shallowMount(JsonSchemaForm, {
       props: {
         schema: {
           type: 'number',
         },
-        value: msg,
+        value: value,
         onChange: (v: any) => {
-          msg = v
+          value = v
         },
       },
     })
@@ -26,7 +26,7 @@ describe('JsonSchemaForm', () => {
     input.trigger('input')
     // 当 onChange 事件触发了，value 是需要发生变化的
     // await numberField.props('onChange')('123')
-    expect(msg).toBe(123)
-    // expect(wrapper.text()).toMatch(msg)
+    expect(value).toBe(123)
+    // expect(wrapper.text()).toMatch(value)
   })
 })

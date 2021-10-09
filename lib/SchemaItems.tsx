@@ -1,9 +1,9 @@
 // 根据不同的类型来把对应渲染这个 schema 的工作交给对应的那个组件来做
 import { defineComponent, computed } from 'vue'
-import NumberField from './fields/NumberField.vue'
+import NumberField from './fields/NumberField'
 // import StringField from './fields/StringField'
 import { SchemaTypes, FiledPropsDefine } from './types'
-import StringField from './fields/StringField.vue'
+import StringField from './fields/StringField'
 import ObjectField from './fields/ObjectField'
 import ArrayField from './fields/ArrayField'
 

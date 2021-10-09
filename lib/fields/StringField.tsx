@@ -3,7 +3,13 @@ import { defineComponent, h } from 'vue'
 
 export default defineComponent({
   name: 'StringField',
-  setup(pros, { slots, emit, attrs }) {
-    return () => h('div', 'this is StringField')
+  setup(props: any, { slots, emit, attrs }) {
+    const handleChange = (e: any) => {
+      props.onChange(e.target.value)
+    }
+    return () => {
+      const { value } = props
+      return <input type="text" value={value as any} onInput={handleChange} />
+    }
   },
 })
