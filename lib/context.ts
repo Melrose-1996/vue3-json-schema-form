@@ -5,7 +5,7 @@ export const SchemaFormContextKey = Symbol()
 
 // 注意: 当函数抽离出来了，如果里面的响应式的数据发生了变化，同样也会重新调用这个函数
 export function useVJSFContext() {
-  const context: { SchemaItem: CommonFieldType } | undefined =
+  const context: { SchemaItem: CommonFieldType, } | undefined =
     inject(SchemaFormContextKey)
 
   if (!context) {

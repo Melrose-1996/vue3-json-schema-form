@@ -1,4 +1,4 @@
-import { Schema } from './types'
+import { Schema, Theme } from './types'
 import { defineComponent, PropType, provide, reactive } from 'vue'
 import SchemaItem from './SchemaItems'
 import { SchemaFormContextKey } from './context'
@@ -17,6 +17,10 @@ export default defineComponent({
       type: Function as PropType<(v: any) => void>,
       required: true,
     },
+    // theme: {
+    //   type: Object as PropType<Theme>,
+    //   require: true,
+    // },
   },
   name: 'SchemaForm',
   setup(props, { slots, emit, attrs }) {
@@ -31,6 +35,7 @@ export default defineComponent({
     // 只有把 context 设置成响应式的对象，我们才能从后续的 watchEffect 这个 api 里面时刻监听着组件的变化( watchEffect 只会去监听响应式数据的变化)
     const context = reactive({
       SchemaItem,
+      // theme: props.theme,
     })
 
     provide(SchemaFormContextKey, context)

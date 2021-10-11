@@ -5,6 +5,8 @@ import MonacoEditor from './components/MonacoEditor'
 // 这些是 json.schema 的例子（其中的结构也是有固定的结构的）
 import demos from './demos'
 import SchemaForm from '../lib'
+import themeDefault from '../lib/theme-default/index'
+import { ThemeProvider } from '../lib/index'
 
 // TODO: 在lib中export
 type Schema = any
@@ -190,11 +192,15 @@ export default defineComponent({
 
             <div class={classes.form}>
               {/* 右边是我们的 schema 区域 */}
-              <SchemaForm
-                schema={demo.schema}
-                onChange={handleChange}
-                value={demo.data}
-              />
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/*  @ts-ignore */}
+              <ThemeProvider theme={themeDefault}>
+                <SchemaForm
+                  schema={demo.schema}
+                  onChange={handleChange}
+                  value={demo.data}
+                />
+              </ThemeProvider>
               {/* <SchemaForm
                 schema={demo.schema}
                 uiSchema={demo.uiSchema || {}}

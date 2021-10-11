@@ -1,8 +1,11 @@
 import { defineComponent, PropType } from 'vue'
-import { FiledPropsDefine, Schema, SelectionWidgetNames } from '../types'
+import { FiledPropsDefine, Schema, SelectionWidgetName } from '../types'
 import { useVJSFContext } from '../context'
 import { createUseStyles } from 'vue-jss'
-import SelectionWidget from '../widgets/Selection'
+
+import { getWidget } from '../theme'
+
+// import SelectionWidget from '../widgets/Selection'
 /**
  * {
  *  items: { type: string},
@@ -69,8 +72,12 @@ const ArrayItemWrapper = defineComponent({
   },
   setup(props: any, { slots }) {
     const classesRef = useStyles()
+
+    const context = useVJSFContext()
+
     return () => {
       const classes = classesRef.value
+
       return (
         <div class={classes.container}>
           <div class={classes.actions}>
@@ -154,7 +161,13 @@ export default defineComponent({
       props.onChange(arr)
     }
 
+    const SelectionWidgetRef = getWidget(SelectionWidgetName.SelectionWidget)
+
     return () => {
+      // const SelectionWidget = context.theme.widgets.SelectionWidget
+
+      const SelectionWidget = SelectionWidgetRef.value
+
       const { SchemaItem } = context
       const { schema, rootSchema, value } = props
       const isMultiType = Array.isArray(schema.items)

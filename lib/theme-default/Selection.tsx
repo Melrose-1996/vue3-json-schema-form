@@ -1,9 +1,23 @@
 import { defineComponent, ref, PropType, watch } from 'vue'
-import { SelectionWidgetPropsDefine, SelectionWidgetDefine } from '../types'
 
-const Selection: SelectionWidgetDefine = defineComponent({
+export default defineComponent({
   name: 'SelectionWidget',
-  props: SelectionWidgetPropsDefine,
+  props: {
+    value: {},
+    onChange: {
+      type: Function as PropType<(v: any) => void>,
+      required: true,
+    },
+    options: {
+      type: Array as PropType<
+        {
+          key: string
+          value: any
+        }[]
+      >,
+      required: true,
+    },
+  },
   setup(props: any, { slots, emit, attrs }) {
     const currentValueRef = ref(props.value)
     // 当输入框的值发生了变化需要复制给 value
@@ -33,5 +47,3 @@ const Selection: SelectionWidgetDefine = defineComponent({
     }
   },
 })
-
-export default Selection
