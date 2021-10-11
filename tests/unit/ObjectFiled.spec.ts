@@ -24,7 +24,9 @@ describe('ObjectFiled', () => {
       props: {
         schema,
         value: {},
-        onChange: () => {},
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        onChange: () => { },
       },
     })
     const strField = wrapper.findComponent(StringField)
@@ -40,6 +42,8 @@ describe('ObjectFiled', () => {
       props: {
         schema,
         value: value,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         onChange: (v: any) => {
           value = v
         },

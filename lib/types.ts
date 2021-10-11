@@ -75,7 +75,6 @@ export enum SelectionWidgetNames {
   SelectionWidget = 'SelectionWidget',
 }
 
-
 export const CommonWidgetPropsDefine = {
   value: {},
   onChange: {
@@ -95,19 +94,20 @@ export const SelectionWidgetPropsDefine = {
     >,
     required: true,
   },
-
 } as const
 
 export type CommonWidgetDefine = DefineComponent<typeof CommonWidgetPropsDefine>
-export type SelectionWidgetDefine = DefineComponent<typeof SelectionWidgetPropsDefine>
+export type SelectionWidgetDefine = DefineComponent<
+  typeof SelectionWidgetPropsDefine
+>
 
 export enum SelectionWidgetName {
-  SelectionWidget = 'SelectionWidget'
+  SelectionWidget = 'SelectionWidget',
 }
 
 export enum CommonWidgetNames {
   TextWidget = 'TextWidget',
-  NumberWidget = 'NumberWidget'
+  NumberWidget = 'NumberWidget',
 }
 
 export interface Theme {

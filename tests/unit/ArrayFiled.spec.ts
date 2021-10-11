@@ -17,7 +17,9 @@ describe('ArrayFiled', () => {
           items: [{ type: 'string' }, { type: 'number' }],
         },
         value: [],
-        onChange: () => {},
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        onChange: () => { },
       },
     })
 
@@ -37,7 +39,9 @@ describe('ArrayFiled', () => {
           items: { type: 'string' },
         },
         value: ['1', '2'],
-        onChange: () => {},
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        onChange: () => { },
       },
     })
 
@@ -58,7 +62,9 @@ describe('ArrayFiled', () => {
           enum: ['1', '2', '3'],
         },
         value: [],
-        onChange: () => {},
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        onChange: () => { },
       },
     })
 
