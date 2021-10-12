@@ -1,7 +1,7 @@
 export default {
   name: 'Demo',
   schema: {
-    type: 'number',
+    type: 'string',
   },
   default: 1,
 }

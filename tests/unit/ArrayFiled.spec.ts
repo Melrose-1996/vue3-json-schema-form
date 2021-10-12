@@ -8,9 +8,11 @@ import JsonSchemaForm, {
   SelectionWidget,
 } from '../../lib'
 
+import TestComponent from '../utils/TestComponent'
+
 describe('ArrayFiled', () => {
   it('should render multi type', () => {
-    const wrapper = shallowMount(JsonSchemaForm, {
+    const wrapper = shallowMount(TestComponent, {
       props: {
         schema: {
           type: 'array',
@@ -32,7 +34,7 @@ describe('ArrayFiled', () => {
   })
 
   it('should render single type', () => {
-    const wrapper = shallowMount(JsonSchemaForm, {
+    const wrapper = shallowMount(TestComponent, {
       props: {
         schema: {
           type: 'array',
@@ -55,7 +57,7 @@ describe('ArrayFiled', () => {
   })
 
   it('should render single type', () => {
-    const wrapper = shallowMount(JsonSchemaForm, {
+    const wrapper = shallowMount(TestComponent, {
       props: {
         schema: {
           type: 'array',
