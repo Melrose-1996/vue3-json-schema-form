@@ -21,7 +21,7 @@ describe('ArrayFiled', () => {
         value: [],
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        onChange: () => { },
+        onChange: () => {},
       },
     })
 
@@ -43,7 +43,7 @@ describe('ArrayFiled', () => {
         value: ['1', '2'],
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        onChange: () => { },
+        onChange: () => {},
       },
     })
 
@@ -66,7 +66,7 @@ describe('ArrayFiled', () => {
         value: [],
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        onChange: () => { },
+        onChange: () => {},
       },
     })
 
