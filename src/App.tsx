@@ -109,15 +109,19 @@ export default defineComponent({
     })
 
     const methodRef: Ref<any> = ref()
+
+    //  对于表单校验而新进行的 ref 校验
+
     const contextRef = ref()
     const classesRef = useStyles()
 
     const validateForm = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      contextRef.value.doValidate().then((result) => {
-        console.log('result', result)
-      })
+      // contextRef.value.doValidate().then((result) => {
+      //   console.log('result', result)
+      // })
+      contextRef.value.doValidate()
     }
     const handleChange = (v: any) => {
       demo.data = v
@@ -141,6 +145,7 @@ export default defineComponent({
     const handleSchemaChange = (v: string) => handleCodeChange('schema', v)
     const handleDataChange = (v: string) => handleCodeChange('data', v)
     const handleUISchemaChange = (v: string) => handleCodeChange('uiSchema', v)
+
     return () => {
       const classes = classesRef.value
       const selected = selectedRef.value
@@ -199,6 +204,7 @@ export default defineComponent({
                   schema={demo.schema}
                   onChange={handleChange}
                   value={demo.data}
+                  contextRef={contextRef}
                 />
               </ThemeProvider>
               {/* <SchemaForm
@@ -210,6 +216,7 @@ export default defineComponent({
                 customValidate={demo.customValidate}
               />
               <button onClick={validateForm}>校验</button> */}
+              <button onClick={validateForm}>校验</button>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@ const addFormats = require('ajv-formats')
 
 // 使用 ajv-errors 这个包的时候一定要在实例化 A
 const ajv = new Ajv({ allErrors: true }) // options can be passed, e.g. {allErrors: true}
-addFormat(ajv)
+addFormats(ajv)
 
 const localize = require('ajv-i18n')
 

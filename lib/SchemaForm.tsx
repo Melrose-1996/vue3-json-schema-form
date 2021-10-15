@@ -1,7 +1,14 @@
 import { Schema, Theme } from './types'
-import { defineComponent, PropType, provide, reactive } from 'vue'
+import { defineComponent, PropType, provide, reactive, Ref, watch } from 'vue'
 import SchemaItem from './SchemaItems'
 import { SchemaFormContextKey } from './context'
+
+interface ContextRef {
+  doValidate: () => {
+    errors: any[]
+    valid: boolean
+  }
+}
 
 export default defineComponent({
   props: {
@@ -16,6 +23,9 @@ export default defineComponent({
     onChange: {
       type: Function as PropType<(v: any) => void>,
       required: true,
+    },
+    contextRef: {
+      type: Object as PropType<Ref<ContextRef | undefined>>,
     },
     // theme: {
     //   type: Object as PropType<Theme>,
@@ -39,6 +49,29 @@ export default defineComponent({
     })
 
     provide(SchemaFormContextKey, context)
+
+    // 监听到父组件的事件
+    watch(
+      () => props.contextRef,
+      () => {
+        if (props.contextRef) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          props.contextRef.value = {
+            doValidate() {
+              console.log('-------------->')
+              return {
+                valid: true,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                errors: [],
+              }
+            },
+          }
+        }
+      },
+      { immediate: true },
+    )
 
     return () => {
       const { schema, value } = props
