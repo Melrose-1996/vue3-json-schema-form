@@ -121,7 +121,8 @@ export default defineComponent({
       // contextRef.value.doValidate().then((result) => {
       //   console.log('result', result)
       // })
-      contextRef.value.doValidate()
+      // contextRef.value.doValidate()
+      console.log(contextRef.value.doValidate())
     }
     const handleChange = (v: any) => {
       demo.data = v
