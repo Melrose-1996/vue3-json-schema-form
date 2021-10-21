@@ -2,6 +2,7 @@ import { CommonWidgetPropsDefine, CommonWidgetDefine } from '../types'
 import { defineComponent } from 'vue'
 
 const TextWidget: CommonWidgetDefine = defineComponent({
+  name: 'TextWidget',
   props: CommonWidgetPropsDefine,
   setup(props: any) {
     const handleChange = (e: any) => {

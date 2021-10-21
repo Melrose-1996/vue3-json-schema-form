@@ -1,59 +1,91 @@
-const Ajv = require('ajv')
+// Node.js require:
+const Ajv = require('ajv').default
 const addFormats = require('ajv-formats')
-
-// 使用 ajv-errors 这个包的时候一定要在实例化 A
-const ajv = new Ajv({ allErrors: true }) // options can be passed, e.g. {allErrors: true}
-addFormats(ajv)
-
 const localize = require('ajv-i18n')
+const addErrors = require('ajv-errors')
 
-require('ajv-errors')(ajv /*, {singleError: true} */)
+const ajv = new Ajv({
+  allErrors: true,
+}) // options can be passed, e.g. {allErrors: true}
+addFormats(ajv)
+addErrors(ajv)
 
-// 注意这里是 addFormat 而不是 addFormats !!
-// 注意 addFormat 这个功能是 ajv 提供的，并不是 json.schema 的标准，而是通过 ajv 进行的扩展，ajv 这个类库提供的功能
-// ajv.addFormat('test', (data) => {
-//   console.log(data, '-----------')
-//   return data === 'haha'
-// })
+/*ajv.addFormat('test', (data) => {
+  return data === 'Hello World'
+})*/
+
 ajv.addKeyword({
   keyword: 'test',
+  /*  validate: function fun (schema, data) {
+      fun.errors = [
+        {
+          keyword: 'test',
+          dataPath: '/name',
+          schemaPath: '#/properties/name/test',
+          params: {},
+          message: 'hello error message'
+        }
 
-  // ☆☆☆ macro function
-  // 等同 name: { type: 'string', test: false, minLength: 10},
+      ]
+      return false
+    },*/
+  /*  compile (schema, parentSchema) {
+      console.log(schema, parentSchema)
+      return () => false
+    },*/
+  /*  metaSchema: {
+      type:'string'
+    },*/
   macro() {
     return {
       minLength: 10,
     }
   },
 })
+
 const schema = {
   type: 'object',
   properties: {
-    foo: { type: 'integer' },
-    bar: { type: 'string', format: 'email' },
     name: {
       type: 'string',
-      test: false,
+      test: '123456',
       errorMessage: {
         type: '必须是字符串',
-        test: '长度不能小于10',
+        test: 'test自定义验证错误',
       },
+      // format: 'test',
+      // minLength:10
+    },
+    age: {
+      type: 'number',
+    },
+    pets: {
+      type: 'array',
+      items: [
+        {
+          type: 'string',
+        },
+        {
+          type: 'number',
+        },
+      ],
+      minItems: 2,
+    },
+    isWorker: {
+      type: 'boolean',
     },
   },
-  required: ['foo'],
-  additionalProperties: false,
+  required: ['age'],
 }
 
 const validate = ajv.compile(schema)
-
-const data = {
-  foo: 1,
-  bar: 'abc@xxx.com',
-  name: 11,
-}
-
-const valid = validate(data)
+const valid = validate({
+  name: 'Hello world',
+  age: 20,
+  pets: ['1', 2],
+  isWorker: true,
+})
 if (!valid) {
-  // localize.zh(validate.errors)
+  localize.zh(validate.errors)
   console.log(validate.errors)
 }

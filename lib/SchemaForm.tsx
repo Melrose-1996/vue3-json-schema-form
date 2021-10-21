@@ -12,7 +12,7 @@ import {
 import SchemaItem from './SchemaItems'
 import { SchemaFormContextKey } from './context'
 
-import { validateFormData } from './validator'
+import { validateFormData, ErrorSchema } from './validator'
 
 // 这个 options 实际上就是创建 ajv 实例的选项
 import Ajv, { Options } from 'ajv'
@@ -77,6 +77,9 @@ export default defineComponent({
       // theme: props.theme,
     })
 
+    // 不需要考虑 key 变化的情况，只需要考虑整体变化的情况就可以了
+    const errorSchemaRef: Ref<ErrorSchema> = shallowRef({})
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const validatorRef: Ref<Ajv.Ajv> = shallowRef() as any
@@ -117,6 +120,8 @@ export default defineComponent({
                 props.locale,
               )
 
+              errorSchemaRef.value = result.errorSchema
+
               return result
             },
           }
@@ -133,6 +138,7 @@ export default defineComponent({
           rootSchema={schema}
           value={value}
           onChange={handleChange}
+          errorSchema={errorSchemaRef.value || {}}
         />
       )
     }

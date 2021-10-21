@@ -1,4 +1,5 @@
 import type { PropType, DefineComponent } from 'vue'
+import type { ErrorSchema } from './validator'
 
 // 会把一些通用的类型统一放在这个 ts 文件里面
 export enum SchemaTypes {
@@ -67,6 +68,10 @@ export const FiledPropsDefine = {
     type: Function as PropType<(v: any) => void>,
     required: true,
   },
+  errorSchema: {
+    type: Object as PropType<ErrorSchema>,
+    required: true,
+  },
 } as const
 
 export type CommonFieldType = DefineComponent<typeof FiledPropsDefine>
@@ -80,6 +85,9 @@ export const CommonWidgetPropsDefine = {
   onChange: {
     type: Function as PropType<(v: any) => void>,
     required: true,
+  },
+  errors: {
+    type: Array as PropType<string[]>,
   },
 } as const
 

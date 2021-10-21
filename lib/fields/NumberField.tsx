@@ -18,9 +18,15 @@ export default defineComponent({
 
     return () => {
       const NumberWidget = NumberWidgetRef.value
-      const { schema, rootSchema, onChange, ...rest } = props
+      const { schema, rootSchema, onChange, errorSchema, ...rest } = props
       // return <input type="number" value={value as any} onInput={handleChange} />
-      return <NumberWidget {...rest} onChange={handleChange} />
+      return (
+        <NumberWidget
+          {...rest}
+          onChange={handleChange}
+          errors={errorSchema.__errors}
+        />
+      )
     }
   },
 })

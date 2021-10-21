@@ -12,10 +12,16 @@ export default defineComponent({
     }
     const TextWidgetRef = getWidget(CommonWidgetNames.TextWidget)
     return () => {
-      const { schema, rootSchema, onChange, ...rest } = props
+      const { schema, rootSchema, onChange, errorSchema, ...rest } = props
       const TextWidget = TextWidgetRef.value
       // 在 props 里面有相同的 keys 会 mergeProps 合并
-      return <TextWidget {...rest} onChange={handleChange} />
+      return (
+        <TextWidget
+          {...rest}
+          onChange={handleChange}
+          errors={errorSchema.__errors}
+        />
+      )
       // return <input type="text" value={value as any} onInput={handleChange} />
     }
   },
