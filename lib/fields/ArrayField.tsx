@@ -222,6 +222,7 @@ export default defineComponent({
             value={props.value}
             onChange={props.onChange}
             errors={errorSchema.__errors}
+            schema={schema}
           />
         )
       }

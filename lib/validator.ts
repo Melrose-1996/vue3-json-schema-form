@@ -42,7 +42,7 @@ function toErrorSchema(errors: TransformErrorObject[]) {
     // 用于查找对象里面是否存在属性，如果没有就加上，然后里面层层叠加
     for (const segment of path.slice(0)) {
       if (!(segment in parent)) {
-        ; (parent as any)[segment] = {}
+        ;(parent as any)[segment] = {}
       }
       parent = parent[segment]
     }

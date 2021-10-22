@@ -12,7 +12,7 @@ export default defineComponent({
     }
     const TextWidgetRef = getWidget(CommonWidgetNames.TextWidget)
     return () => {
-      const { schema, rootSchema, onChange, errorSchema, ...rest } = props
+      const { rootSchema, onChange, errorSchema, ...rest } = props
       const TextWidget = TextWidgetRef.value
       // 在 props 里面有相同的 keys 会 mergeProps 合并
       return (
