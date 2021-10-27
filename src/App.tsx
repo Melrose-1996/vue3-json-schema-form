@@ -118,11 +118,11 @@ export default defineComponent({
     const validateForm = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      // contextRef.value.doValidate().then((result) => {
-      //   console.log('result', result)
-      // })
+      contextRef.value.doValidate().then((result) => {
+        console.log('result', result)
+      })
       // contextRef.value.doValidate()
-      console.log(contextRef.value.doValidate())
+      // console.log(contextRef.value.doValidate())
     }
     const handleChange = (v: any) => {
       demo.data = v
@@ -206,6 +206,7 @@ export default defineComponent({
                   onChange={handleChange}
                   value={demo.data}
                   contextRef={contextRef}
+                  customValidate={demo.customValidate}
                 />
               </ThemeProvider>
               {/* <SchemaForm
