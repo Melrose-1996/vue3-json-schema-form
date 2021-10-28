@@ -1,4 +1,4 @@
-import { Schema, Theme } from './types'
+import { Schema, Theme, UISchema } from './types'
 import {
   defineComponent,
   PropType,
@@ -60,6 +60,9 @@ export default defineComponent({
     // 自定义校验规则
     customValidate: {
       type: Function as PropType<(data: any, errors: any) => void>,
+    },
+    uiSchema: {
+      type: Object as PropType<UISchema>,
     },
     // theme: {
     //   type: Object as PropType<Theme>,
@@ -174,13 +177,14 @@ export default defineComponent({
     )
 
     return () => {
-      const { schema, value } = props
+      const { schema, value, uiSchema } = props
       return (
         <SchemaItem
           schema={schema}
           rootSchema={schema}
           value={value}
           onChange={handleChange}
+          uiSchema={uiSchema || {}}
           errorSchema={errorSchemaRef.value || {}}
         />
       )

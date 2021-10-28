@@ -207,6 +207,7 @@ export default defineComponent({
                   value={demo.data}
                   contextRef={contextRef}
                   customValidate={demo.customValidate}
+                  uiSchema={demo.uiSchema || {}}
                 />
               </ThemeProvider>
               {/* <SchemaForm

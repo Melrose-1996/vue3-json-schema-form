@@ -68,6 +68,10 @@ export const FiledPropsDefine = {
     type: Function as PropType<(v: any) => void>,
     required: true,
   },
+  uiSchema: {
+    type: Object as PropType<UISchema>,
+    required: true,
+  },
   errorSchema: {
     type: Object as PropType<ErrorSchema>,
     required: true,
@@ -92,6 +96,9 @@ export const CommonWidgetPropsDefine = {
   schema: {
     type: Object as PropType<Schema>,
     required: true,
+  },
+  options: {
+    type: Object as PropType<{ [key: string]: any }>,
   },
 } as const
 
@@ -128,4 +135,14 @@ export interface Theme {
     [CommonWidgetNames.TextWidget]: CommonWidgetDefine
     [CommonWidgetNames.NumberWidget]: CommonWidgetDefine
   }
+}
+
+export type UISchema = {
+  widget?: string | CommonWidgetDefine
+  properties?: {
+    [key: string]: UISchema
+  }
+  items?: UISchema | UISchema[]
+} & {
+  [key: string]: any // w: 开头
 }

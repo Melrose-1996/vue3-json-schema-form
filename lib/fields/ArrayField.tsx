@@ -169,7 +169,7 @@ export default defineComponent({
       const SelectionWidget = SelectionWidgetRef.value
 
       const { SchemaItem } = context
-      const { schema, rootSchema, value, errorSchema } = props
+      const { schema, rootSchema, value, errorSchema, uiSchema } = props
       const isMultiType = Array.isArray(schema.items)
       const isSelect = schema.items && schema.items.enum
 
@@ -177,16 +177,24 @@ export default defineComponent({
 
       if (isMultiType) {
         const arr = Array.isArray(value) ? value : []
-        return schema.items!.map((s: Schema, index: number) => (
-          <SchemaItem
-            schema={s}
-            key={index}
-            rootSchema={rootSchema}
-            onChange={(v: any) => handleArrayItemChange(v, index)}
-            value={arr[index]}
-            errorSchema={errorSchema[index] || {}}
-          />
-        ))
+        return schema.items!.map((s: Schema, index: number) => {
+          const itemUiSchema = uiSchema.items
+          const us =
+            (Array.isArray(itemUiSchema)
+              ? itemUiSchema[index]
+              : itemUiSchema) || {}
+          return (
+            <SchemaItem
+              schema={s}
+              key={index}
+              rootSchema={rootSchema}
+              onChange={(v: any) => handleArrayItemChange(v, index)}
+              value={arr[index]}
+              errorSchema={errorSchema[index] || {}}
+              uiSchema={us}
+            />
+          )
+        })
       } else if (!isSelect) {
         // 不是单类型的渲染
         const arr = Array.isArray(value) ? value : []
@@ -206,6 +214,7 @@ export default defineComponent({
                 onChange={(v: any) => handleArrayItemChange(v, index)}
                 value={v}
                 errorSchema={errorSchema[index] || {}}
+                uiSchema={(uiSchema.items as any) || {}}
               />
             </ArrayItemWrapper>
           )
@@ -218,6 +227,8 @@ export default defineComponent({
         }))
         return (
           <SelectionWidget
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             options={options || []}
             value={props.value}
             onChange={props.onChange}
