@@ -8,13 +8,14 @@ export default defineComponent({
   name: 'NumberField',
   props: FiledPropsDefine,
   setup(props: any, { slots, emit, attrs }) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const NumberWidgetRef = getWidget(CommonWidgetNames.NumberWidget)
     const handleChange = (v: string) => {
       // const value = e.target.value
       const num = Number(v)
       props.onChange(Number.isNaN(num) ? undefined : num)
     }
-
-    const NumberWidgetRef = getWidget(CommonWidgetNames.NumberWidget)
 
     return () => {
       const NumberWidget = NumberWidgetRef.value

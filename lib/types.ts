@@ -1,6 +1,8 @@
 import type { PropType, DefineComponent } from 'vue'
 import type { ErrorSchema } from './validator'
 
+import type { FormatDefinition, KeywordDefinition } from 'ajv'
+
 // 会把一些通用的类型统一放在这个 ts 文件里面
 export enum SchemaTypes {
   'NUMBER' = 'number',
@@ -145,4 +147,10 @@ export type UISchema = {
   items?: UISchema | UISchema[]
 } & {
   [key: string]: any // w: 开头
+}
+
+export interface CustomFormat {
+  name: string
+  definition: FormatDefinition<any>
+  component: CommonWidgetDefine
 }

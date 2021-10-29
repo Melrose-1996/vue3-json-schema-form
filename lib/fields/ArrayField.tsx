@@ -160,7 +160,8 @@ export default defineComponent({
       arr.splice(index + 1, 0, item[0])
       props.onChange(arr)
     }
-
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const SelectionWidgetRef = getWidget(SelectionWidgetName.SelectionWidget)
 
     return () => {

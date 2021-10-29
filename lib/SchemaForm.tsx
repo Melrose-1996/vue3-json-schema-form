@@ -1,4 +1,4 @@
-import { Schema, Theme, UISchema } from './types'
+import { Schema, Theme, UISchema, CustomFormat } from './types'
 import {
   defineComponent,
   PropType,
@@ -9,6 +9,7 @@ import {
   shallowRef,
   watchEffect,
   ref,
+  computed,
 } from 'vue'
 import SchemaItem from './SchemaItems'
 import { SchemaFormContextKey } from './context'
@@ -17,6 +18,7 @@ import { validateFormData, ErrorSchema } from './validator'
 
 // 这个 options 实际上就是创建 ajv 实例的选项
 import Ajv, { Options } from 'ajv'
+import { CommonWidgetDefine } from 'lib'
 
 interface ContextRef {
   doValidate: () => Promise<{
@@ -64,6 +66,9 @@ export default defineComponent({
     uiSchema: {
       type: Object as PropType<UISchema>,
     },
+    customFormats: {
+      type: [Array, Object] as PropType<CustomFormat | CustomFormat[]>,
+    },
     // theme: {
     //   type: Object as PropType<Theme>,
     //   require: true,
@@ -77,13 +82,6 @@ export default defineComponent({
       // @ts-ignore
       props.onChange(v)
     }
-
-    // 作为所有节点的父节点，只需要向后面的节点提供一个 key，甚至可以提供组件节点
-    // 只有把 context 设置成响应式的对象，我们才能从后续的 watchEffect 这个 api 里面时刻监听着组件的变化( watchEffect 只会去监听响应式数据的变化)
-    const context = reactive({
-      SchemaItem,
-      // theme: props.theme,
-    })
 
     // 不需要考虑 key 变化的情况，只需要考虑整体变化的情况就可以了
     const errorSchemaRef: Ref<ErrorSchema> = shallowRef({})
@@ -100,11 +98,14 @@ export default defineComponent({
       })
     })
 
-    // 创建 ajv 的实例对象
-
-    // 通过 computed 实现 props 动态变化实现
-
-    provide(SchemaFormContextKey, context)
+    if (props.customFormats) {
+      const customFormats = Array.isArray(props.customFormats)
+        ? props.customFormats
+        : [props.customFormats]
+      customFormats.forEach((format: any) => {
+        validatorRef.value.addFormat(format.name, format.definition)
+      })
+    }
 
     // 存储校验的信息
     const validateResolveRef = ref()
@@ -151,30 +152,34 @@ export default defineComponent({
                 validateResolveRef.value = resolve
                 doValidate()
               })
-
-              // 表单校验
-              // const valid = validatorRef.value.validate(
-              //   props.schema,
-              //   props.value,
-              // ) as boolean
-
-              // const result = await validateFormData(
-              //   validatorRef.value,
-              //   props.value,
-              //   props.schema,
-              //   props.locale,
-              //   props.customValidate,
-              // )
-
-              // errorSchemaRef.value = result.errorSchema
-
-              // return result
             },
           }
         }
       },
       { immediate: true },
     )
+
+    const formatMapRef = computed(() => {
+      if (props.customFormats) {
+        const customFormats = Array.isArray(props.customFormats)
+          ? props.customFormats
+          : [props.customFormats]
+        return customFormats.reduce((result: any, format: any) => {
+          // 这里就拿到了 format 对应组件的 map
+          result[format.name] = format.component
+          return result
+        }, {} as { [key: string]: CommonWidgetDefine })
+      } else {
+        return {}
+      }
+    })
+
+    const context: any = {
+      SchemaItem,
+      formatMapRef,
+    }
+
+    provide(SchemaFormContextKey, context)
 
     return () => {
       const { schema, value, uiSchema } = props
