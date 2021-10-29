@@ -9,6 +9,7 @@ import themeDefault from '../lib/theme-default/index'
 import { ThemeProvider } from '../lib/index'
 
 import customFormat from './plugins/customForm'
+import customKeyword from './plugins/customKeyword'
 
 // TODO: 在lib中export
 type Schema = any
@@ -211,6 +212,7 @@ export default defineComponent({
                   customValidate={demo.customValidate}
                   uiSchema={demo.uiSchema || {}}
                   customFormats={customFormat}
+                  customKeywords={customKeyword}
                 />
               </ThemeProvider>
               {/* <SchemaForm

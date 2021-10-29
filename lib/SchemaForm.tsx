@@ -1,4 +1,4 @@
-import { Schema, Theme, UISchema, CustomFormat } from './types'
+import { Schema, Theme, UISchema, CustomFormat, CustomKeyword } from './types'
 import {
   defineComponent,
   PropType,
@@ -12,7 +12,7 @@ import {
   computed,
 } from 'vue'
 import SchemaItem from './SchemaItems'
-import { SchemaFormContextKey } from './context'
+import { SchemaFormContextKey, SchemaFormContextProps } from './context'
 
 import { validateFormData, ErrorSchema } from './validator'
 
@@ -69,6 +69,9 @@ export default defineComponent({
     customFormats: {
       type: [Array, Object] as PropType<CustomFormat | CustomFormat[]>,
     },
+    customKeywords: {
+      type: [Array, Object] as PropType<CustomKeyword | CustomKeyword[]>,
+    },
     // theme: {
     //   type: Object as PropType<Theme>,
     //   require: true,
@@ -96,16 +99,24 @@ export default defineComponent({
 
         ...props.ajvOptions,
       })
-    })
+      if (props.customFormats) {
+        const customFormats = Array.isArray(props.customFormats)
+          ? props.customFormats
+          : [props.customFormats]
+        customFormats.forEach((format: any) => {
+          validatorRef.value.addFormat(format.name, format.definition)
+        })
+      }
 
-    if (props.customFormats) {
-      const customFormats = Array.isArray(props.customFormats)
-        ? props.customFormats
-        : [props.customFormats]
-      customFormats.forEach((format: any) => {
-        validatorRef.value.addFormat(format.name, format.definition)
-      })
-    }
+      if (props.customKeywords) {
+        const customKeywords = Array.isArray(props.customKeywords)
+          ? props.customKeywords
+          : [props.customKeywords]
+        customKeywords.forEach((keyword: any) =>
+          validatorRef.value.addKeyword(keyword.name, keyword.deinition as any),
+        )
+      }
+    })
 
     // 存储校验的信息
     const validateResolveRef = ref()
@@ -174,10 +185,39 @@ export default defineComponent({
       }
     })
 
-    const context: any = {
+    // 方法向下去提供
+    const transformSchemaRef = computed(() => {
+      if (props.customKeywords) {
+        const customKeywords = Array.isArray(props.customKeywords)
+          ? props.customKeywords
+          : [props.customKeywords]
+
+        return (schema: Schema) => {
+          let newSchema = schema
+          customKeywords.forEach((keyword: any) => {
+            if ((newSchema as any)[keyword.name]) {
+              newSchema = keyword.transformSchema(schema)
+            }
+          })
+          return newSchema
+        }
+      }
+      return (s: Schema) => s
+    })
+
+    // const context: any = {
+    //   SchemaItem,
+    //   formatMapRef,
+    //   transformSchemaRef,
+    // }
+
+    const context = reactive<SchemaFormContextProps>({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       SchemaItem,
       formatMapRef,
-    }
+      transformSchemaRef,
+    })
 
     provide(SchemaFormContextKey, context)
 

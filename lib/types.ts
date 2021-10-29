@@ -1,7 +1,7 @@
 import type { PropType, DefineComponent } from 'vue'
 import type { ErrorSchema } from './validator'
 
-import type { FormatDefinition, KeywordDefinition } from 'ajv'
+import type { FormatDefinition } from 'ajv'
 
 // 会把一些通用的类型统一放在这个 ts 文件里面
 export enum SchemaTypes {
@@ -153,4 +153,26 @@ export interface CustomFormat {
   name: string
   definition: FormatDefinition<any>
   component: CommonWidgetDefine
+}
+
+interface VjsfKeywordDefinition {
+  type?: string | Array<string>
+  async?: boolean
+  $data?: boolean
+  errors?: boolean | string
+  metaSchema?: any
+  // schema: false makes validate not to expect schema (ValidateFunction)
+  schema?: boolean
+  statements?: boolean
+  dependencies?: Array<string>
+  modifying?: boolean
+  valid?: boolean
+  // one and only one of the following properties should be present
+  macro: (schema: any, parentSchema: any, it: any) => any | boolean
+}
+
+export interface CustomKeyword {
+  name: string
+  deinition: VjsfKeywordDefinition
+  transformSchema: (originSchema: Schema) => Schema
 }

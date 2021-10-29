@@ -8,6 +8,7 @@ import ObjectField from './fields/ObjectField'
 import ArrayField from './fields/ArrayField'
 
 import { retrieveSchema } from './utils'
+import { useVJSFContext } from './context'
 
 export default defineComponent({
   name: 'SchemaItems',
@@ -15,7 +16,12 @@ export default defineComponent({
   setup(props, { slots, emit, attrs }) {
     const retrievedSchemaRef = computed(() => {
       const { schema, rootSchema, value } = props
-      return retrieveSchema(schema, rootSchema, value)
+      const formContext = useVJSFContext()
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return formContext.transformSchemaRef(
+        retrieveSchema(schema, rootSchema, value),
+      )
     })
     return () => {
       const { schema } = props
