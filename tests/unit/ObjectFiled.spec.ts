@@ -27,7 +27,7 @@ describe('ObjectFiled', () => {
         value: {},
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        onChange: () => { },
+        onChange: () => {},
       },
     })
     const strField = wrapper.findComponent(StringField)

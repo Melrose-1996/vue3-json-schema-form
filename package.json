@@ -9,8 +9,16 @@
     "build:theme": "vue-cli-service build --no-clean --target lib --name theme-default/index lib/theme-default/index.tsx --mode lib",
     "test:unit": "vue-cli-service test:unit",
     "test:unit:cov": "vue-cli-service test:unit --coverage",
+    "prepublishOnly": "npm run build",
     "lint": "vue-cli-service lint"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.common.js",
   "dependencies": {
     "ajv": "^8.6.3",
     "ajv-errors": "^3.0.0",
