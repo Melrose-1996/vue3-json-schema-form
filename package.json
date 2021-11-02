@@ -8,6 +8,7 @@
     "build:core": "vue-cli-service build --no-clean --target lib --name index lib/index.ts --mode lib",
     "build:theme": "vue-cli-service build --no-clean --target lib --name theme-default/index lib/theme-default/index.tsx --mode lib",
     "test:unit": "vue-cli-service test:unit",
+    "test:unit:cov": "vue-cli-service test:unit --coverage",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

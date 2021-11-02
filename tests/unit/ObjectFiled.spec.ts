@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils'
 // import HelloWorld from '@/components/HelloWorld.vue'
 
 import JsonSchemaForm, { NumberField, StringField } from '../../lib'
+import TestComponent from '../utils/TestComponent'
 
 describe('ObjectFiled', () => {
   let schema: any
@@ -20,7 +21,7 @@ describe('ObjectFiled', () => {
   })
 
   it('should render properties to correct fields', async () => {
-    const wrapper = shallowMount(JsonSchemaForm, {
+    const wrapper = shallowMount(TestComponent, {
       props: {
         schema,
         value: {},
@@ -38,7 +39,7 @@ describe('ObjectFiled', () => {
     let value: any = {
       name: '123',
     }
-    const wrapper = shallowMount(JsonSchemaForm, {
+    const wrapper = shallowMount(TestComponent, {
       props: {
         schema,
         value: value,

@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
-      - run: npm run test:unit:unit
+      - run: npm run test:unit:cov
         # 通过 true，使得我们在 vue.config.js 获取到 CI (process.env.CI)
         env:
           CI: true
@@ -38,6 +38,9 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
+          # 标识
           flags: unittests
+          # 从何处去读取该数据
           file: ./coverage/clover.xml
+          # 如果报错了去把整个 CI 去除掉
           fail_ci_if_error: true

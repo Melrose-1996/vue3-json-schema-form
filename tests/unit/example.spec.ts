@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
+import TestComponent from 'tests/utils/TestComponent'
 // import HelloWorld from '@/components/HelloWorld.vue'
 
 import JsonSchemaForm, { NumberField } from '../../lib'
@@ -7,7 +8,7 @@ describe('JsonSchemaForm', () => {
   it('should render correct number field', async () => {
     let value = ''
     // 这里我们去渲染这个组件 wrapper ,我们是可以去找到一个 schemaItem 节点和 numberField 节点
-    const wrapper = shallowMount(JsonSchemaForm, {
+    const wrapper = shallowMount(TestComponent, {
       props: {
         schema: {
           type: 'number',
