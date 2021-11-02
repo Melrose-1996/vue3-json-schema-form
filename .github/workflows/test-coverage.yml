@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
-      - run: npm run test:unit:cov
+      - run: npm run test:unit:unit
         # 通过 true，使得我们在 vue.config.js 获取到 CI (process.env.CI)
         env:
           CI: true
