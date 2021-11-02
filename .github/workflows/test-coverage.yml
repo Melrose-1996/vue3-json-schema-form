@@ -1,0 +1,43 @@
+# 任务的名字
+name: test-coverage
+
+# 什么时候触发，执行这个任务
+on: [push]
+
+# 执行的任务，做什么相关的事情
+jobs:
+  build:
+    # 在哪些系统，哪些平台上去运行，如果是希望在多个环境的情况下去运行的话，可以采用变量的方式去声明
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # 矩阵： 针对于不同的操作系统，都能跑 node 三个版本 3*3 = 9
+      matrix:
+        # node 版本
+        node-version: [8.x, 10.x, 12.x]
+        # 运行的操作系统
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    # 执行这个命令的任务的流程
+    steps:
+      # github 的 actions 是可以继承其他的 actions 的(也就是在别处可以先声明好 actions 这样，就可以直接去继承并使用)
+      # 把代码 checkout 操作系统上去执行
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        # 配置 node 环境的一个任务
+        uses: actions/setup-node@v1
+        # 执行 node 的一个变量
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+      - run: npm run test:unit:cov
+        # 通过 true，使得我们在 vue.config.js 获取到 CI (process.env.CI)
+        env:
+          CI: true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          flags: unittests
+          file: ./coverage/clover.xml
+          fail_ci_if_error: true
